@@ -28,123 +28,61 @@ const ctx = canvas.getContext("2d");
 const gameWindowWidth = canvas.width;
 const gameWindowHeight = canvas.height;
 
+// Refactor player like this
+// player = { x: 450, ..... dx: 0, dy: 0}
+// access via . operator (player.x, player.dy)
 let playerX = 450;
 let playerY = 450;
 const playerWidth = 30;
 const playerHeight = 30;
 const playerSpeed = 1.2;
-
-let playerMovingUp = false;
-let playerMovingDown = false;
-let playerMovingLeft = false;
-let playerMovingRight = false;
-let playerCollidingRight = false;
-let playerCollidingLeft = false;
-let playerCollidingUp = false;
-let playerCollidingDown = false;
+let playerDX = 0;
+let playerDY = 0;
 
 let friendX = gameWindowWidth - 150;
 let friendY = gameWindowHeight - 200;
 
 // Maybe create InputHandler class to clean this up
 // Handle Input - you don't want this in the update method since it adds a new event listener every frame, 
-document.addEventListener('keydown', function(event) {
+document.addEventListener('keyup', function(event) {
     // switch or nah???
-    if (event.code === "KeyW") {
-        playerMovingUp = true;
+    if (event.code === "KeyW" || event.code === "KeyS") {
+        playerDY = 0;
     } 
-    if (event.code === "KeyA") {
-        playerMovingLeft = true;
-    }
-    if (event.code === "KeyS") {
-        playerMovingDown = true;
-    }
-    if (event.code === "KeyD") {
-        playerMovingRight = true;
+    if (event.code === "KeyA" || event.code === "KeyD") {
+        playerDX = 0;
     }
 });
 
-document.addEventListener('keyup', function(event) {
+document.addEventListener('keydown', function(event) {
     if (event.code === "KeyW") {
-        playerMovingUp = false;
+        playerDY = -1;
     } 
     if (event.code === "KeyA") {
-        playerMovingLeft = false;
+        playerDX = -1;
     }
     if (event.code === "KeyS") {
-        playerMovingDown = false;
+        playerDY = 1;
     }
     if (event.code === "KeyD") {
-        playerMovingRight = false;
+        playerDX = 1;
     }
 });
 
 // Update Stuff
 function update() {
     // Update Logic
-
-    // Handle Input
-    if (playerMovingUp && !playerCollidingUp) {
-        console.log("Up");
-        playerY -= playerSpeed;
-    }
-    if (playerMovingDown && !playerCollidingDown) {
-        console.log("Down");
-        playerY += playerSpeed;
-    }
-    if (playerMovingLeft && !playerCollidingLeft) {
-        console.log("Left");
-        playerX -= playerSpeed;
-    }
-    if (playerMovingRight && !playerCollidingRight) {
-        console.log("Right");
-        playerX += playerSpeed;
-    }
+    var playerNextX = playerX + playerDX;
+    var playerNextY = playerY + playerDY;
 
     // Check Collision
-    if (AABB_Collision(playerX, playerY, playerWidth, playerHeight,
+    if (!AABB_Collision(playerNextX, playerNextY, playerWidth, playerHeight,
                     friendX, friendY, playerWidth, playerHeight)) {
-        
-        // so if the player position_x is more than classmates pos_X and colliding
-        //  then restrict player from movingLeft
-        // would diagonal movement cause problems here???
 
-        // hmmm issues:
-        // - can't move left and right when collideUp - i move one step and then can't move any further
-        // - same when collideDown, same with collideLeft and Right
-        // Troubleshoot tomorrow im too tired to do it today its probably something small
-        // Ahhh wait how about modifying the AABB collision to return the collision direction
-        // and movement direction or whatever we need
-        if (playerMovingLeft) {
-            if (playerX < friendX + playerWidth) { 
-                playerCollidingLeft = true;
-                playerMovingLeft = false;
-            } 
-        } 
-        if (playerMovingRight) {
-            if (playerX + playerWidth > friendX) {
-                playerCollidingRight = true;
-                playerMovingRight = false;
-            }
-        } 
-        if (playerMovingUp) {
-            if (playerY < friendY + playerHeight) {
-                playerCollidingUp = true;
-                playerMovingUp = false;
-            }
-        } 
-        if (playerMovingDown) {
-            if (playerY + playerHeight > friendY) {
-                playerCollidingDown = true;
-                playerMovingDown = false;
-            }
-        }
-    } else {
-        playerCollidingUp = false;
-        playerCollidingDown = false
-        playerCollidingLeft = false;
-        playerCollidingRight = false;   
-    }
+        // No collision = update position
+        playerX = playerNextX;
+        playerY = playerNextY;
+    } 
 
     // Call Render
     render();

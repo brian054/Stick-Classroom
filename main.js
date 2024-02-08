@@ -21,6 +21,8 @@ where you go through and cheat your way through school - bet.
 
 
 */
+import { AABB_Collision } from "./helpers.js";
+import { Desk } from "./Desk.js";
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
@@ -41,6 +43,23 @@ let playerDY = 0;
 
 let friendX = gameWindowWidth - 150;
 let friendY = gameWindowHeight - 200;
+
+// Desks
+const deskCols = 5;
+const deskRows = 3;
+let desks = new Array(deskRows);
+for (let i = 0; i < deskRows; i++) {
+    desks[i] = new Array(deskCols).fill(0);
+}
+
+// Can we do this faster tho???
+for (let i = 0; i < deskRows; i++) {
+    for (let j = 0; j < deskCols; j++) {
+        var x = i * 180 + 50;
+        var y = j * 120 + 120;
+        desks[i][j] = new Desk(x, y, ctx);
+    }
+}
 
 // Maybe create InputHandler class to clean this up
 // Handle Input - you don't want this in the update method since it adds a new event listener every frame, 
@@ -76,13 +95,37 @@ function update() {
     var playerNextY = playerY + playerDY;
 
     // Check Collision
-    if (!AABB_Collision(playerNextX, playerNextY, playerWidth, playerHeight,
-                    friendX, friendY, playerWidth, playerHeight)) {
+    // if (!AABB_Collision(playerNextX, playerNextY, playerWidth, playerHeight,
+    //                 friendX, friendY, playerWidth, playerHeight) && 
+    //     !AABB_Collision(playerNextX, playerNextY, playerWidth, playerHeight,
+    //                 desks[0][0].xPos, desks[0][0].yPos, desks[0][0].width, desks[0][0].height)) {
+    //     // No collision = update position
+    //     playerX = playerNextX;
+    //     playerY = playerNextY;
+    // } 
 
-        // No collision = update position
-        playerX = playerNextX;
-        playerY = playerNextY;
-    } 
+    if (AABB_Collision(playerNextX, playerNextY, playerWidth, playerHeight,
+                         desks[0][0].xPos, desks[0][0].yPos, desks[0][0].width, desks[0][0].height)) {
+        console.log("YES");                        
+    }
+
+    playerX = playerNextX;
+    playerY = playerNextY;
+
+    // console.log("Desk0 xPos: " + desks[0][0].xPos);
+    // console.log("Desk0 yPos: " + desks[0][0].yPos);
+    // console.log("player xPos: " + playerX);
+    // console.log("player yPos: " + playerY);
+
+    // Collision with desks
+    // const flatDesks = desks.flat();
+    // for (let i = 0; i < flatDesks.length; i++) {
+    //     if (AABB_Collision(playerNextX, playerNextY, playerWidth, playerHeight,
+    //                         flatDesks[i].xPos, flatDesks[i].yPos, flatDesks[i].width, flatDesks[i].height)) {
+    //         console.log(flatDesks[i].xPos);
+    //         console.log(flatDesks[i].yPos);
+    //     } 
+    // }
 
     // Call Render
     render();
@@ -105,6 +148,13 @@ function render() {
     ctx.fillStyle = "blue";
     ctx.fillRect(friendX, friendY, playerWidth, playerHeight);
 
+    // // Draw Desks
+    for (var i = 0; i < deskRows; i++) {
+        for (var j = 0; j < deskCols; j++) {
+            desks[i][j].drawDesk(ctx);
+        }
+    }
+    //desks[0].drawDesk(ctx);
     ctx.stroke();
 }
 

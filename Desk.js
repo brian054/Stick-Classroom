@@ -12,13 +12,14 @@ export class Desk {
     constructor(x, y, ctx) {
         this.xPos = x;
         this.yPos = y;
-        this.length = 100;
+        this.width = 100;
         this.height = 40;
+        this.ctx = ctx;
     }
 
-    drawDesk(ctx) {
-        ctx.beginPath();
-        ctx.fillStyle = "Red";
-        ctx.fillRect(this.xPos, this.yPos, this.length, this.height);
+    drawDesk() {
+        this.ctx.beginPath();
+        this.ctx.fillStyle = "Red";
+        this.ctx.fillRect(this.xPos, this.yPos, this.width, this.height);
     }
 }

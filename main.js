@@ -12,7 +12,7 @@ Separate Project Idea:
 Hmmmm now I'm thinking 2d tile rpg right - hmmm we 
 could do a more story driven thing there - like an rpg
 where you go through and cheat your way through school - bet.
-    - TODO: 2d TileRPG engine in JS, 2d RPG in MonoGame, pick whichever you like more
+    - TODO: 2d TileRPG engine in JS, 2d RPG in MonoGame, pick whichever you like more fr
 
     
     Not sure yet but might need this: 
@@ -93,39 +93,23 @@ function update() {
     // Update Logic
     var playerNextX = playerX + playerDX;
     var playerNextY = playerY + playerDY;
-
-    // Check Collision
-    // if (!AABB_Collision(playerNextX, playerNextY, playerWidth, playerHeight,
-    //                 friendX, friendY, playerWidth, playerHeight) && 
-    //     !AABB_Collision(playerNextX, playerNextY, playerWidth, playerHeight,
-    //                 desks[0][0].xPos, desks[0][0].yPos, desks[0][0].width, desks[0][0].height)) {
-    //     // No collision = update position
-    //     playerX = playerNextX;
-    //     playerY = playerNextY;
-    // } 
-
-    if (AABB_Collision(playerNextX, playerNextY, playerWidth, playerHeight,
-                         desks[0][0].xPos, desks[0][0].yPos, desks[0][0].width, desks[0][0].height)) {
-        console.log("YES");                        
-    }
-
-    playerX = playerNextX;
-    playerY = playerNextY;
-
-    // console.log("Desk0 xPos: " + desks[0][0].xPos);
-    // console.log("Desk0 yPos: " + desks[0][0].yPos);
-    // console.log("player xPos: " + playerX);
-    // console.log("player yPos: " + playerY);
+    var collision = false;
 
     // Collision with desks
-    // const flatDesks = desks.flat();
-    // for (let i = 0; i < flatDesks.length; i++) {
-    //     if (AABB_Collision(playerNextX, playerNextY, playerWidth, playerHeight,
-    //                         flatDesks[i].xPos, flatDesks[i].yPos, flatDesks[i].width, flatDesks[i].height)) {
-    //         console.log(flatDesks[i].xPos);
-    //         console.log(flatDesks[i].yPos);
-    //     } 
-    // }
+    const flatDesks = desks.flat();
+    for (let i = 0; i < flatDesks.length; i++) {
+        if (AABB_Collision(playerNextX, playerNextY, playerWidth, playerHeight,
+                            flatDesks[i].xPos, flatDesks[i].yPos, flatDesks[i].width, flatDesks[i].height)) {
+            collision = true;
+            break;
+        } 
+    }
+
+    // if no collision, move the player
+    if (!collision) {
+        playerX = playerNextX;
+        playerY = playerNextY;
+    }
 
     // Call Render
     render();
@@ -148,13 +132,12 @@ function render() {
     ctx.fillStyle = "blue";
     ctx.fillRect(friendX, friendY, playerWidth, playerHeight);
 
-    // // Draw Desks
+    // Draw Desks
     for (var i = 0; i < deskRows; i++) {
         for (var j = 0; j < deskCols; j++) {
             desks[i][j].drawDesk(ctx);
         }
     }
-    //desks[0].drawDesk(ctx);
     ctx.stroke();
 }
 

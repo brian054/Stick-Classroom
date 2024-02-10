@@ -38,6 +38,10 @@ const cheatBarX = gameWindowWidth - 50;
 const cheatBarY = 100;
 const cheatBarWidth = 35;
 const cheatBarHeight = gameWindowHeight - 160;
+let cheatBarFillY = cheatBarY + cheatBarHeight;
+let cheatBarFillHeight = 10; 
+let cheatBarFillingBool = false;
+const growthRateCheatBar = 1;
 
 // Refactor player like this
 // player = { x: 450, ..... dx: 0, dy: 0}
@@ -97,6 +101,17 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
+document.addEventListener('mousedown', function(event) {
+    console.log("mouse down");
+    cheatBarFillingBool = true;
+});
+
+document.addEventListener('mouseup', function(event) {
+    console.log("mouse up");
+    cheatBarFillingBool = false;
+});
+
+let playerCollidedLastFrame = false;
 // Update Stuff
 function update() {
     // Update Logic
@@ -117,13 +132,23 @@ function update() {
     // Collision with player
     if (AABB_Collision(playerNextX, playerNextY, playerWidth, playerHeight, 
                         friendX, friendY, playerWidth, playerHeight)) {
-        collision = true;
+       // playerCollidedLastFrame = true;
+       collision = true;
     }
 
-    // if no collision, move the player
     if (!collision) {
         playerX = playerNextX;
         playerY = playerNextY;
+    } else {
+        playerCollidedLastFrame = true;
+    }
+
+    if (playerCollidedLastFrame) {
+        if (cheatBarFillingBool) {
+            if (cheatBarFillHeight < 540) {
+                cheatBarFillHeight += growthRateCheatBar;
+            }
+        }
     }
 
     // Call Render
@@ -155,8 +180,10 @@ function render() {
     }
 
     // Draw Cheat Bar
-    ctx.strokeStyle = "black"
+    ctx.strokeStyle = "black";
     ctx.strokeRect(cheatBarX, cheatBarY, cheatBarWidth, cheatBarHeight);
+    ctx.fillStyle = "red";
+    ctx.fillRect(cheatBarX, cheatBarFillY, cheatBarWidth - 1, (-cheatBarFillHeight));
 
     ctx.stroke();
 }

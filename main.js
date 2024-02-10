@@ -24,11 +24,20 @@ where you go through and cheat your way through school - bet.
 import { AABB_Collision } from "./helpers.js";
 import { Desk } from "./Desk.js";
 
+// How do we fill the bar?
+// With a smaller rectangle that grows as you click next to friend
+
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
 const gameWindowWidth = canvas.width;
 const gameWindowHeight = canvas.height;
+
+// Create Cheat Bar
+const cheatBarX = gameWindowWidth - 50;
+const cheatBarY = 100;
+const cheatBarWidth = 35;
+const cheatBarHeight = gameWindowHeight - 160;
 
 // Refactor player like this
 // player = { x: 450, ..... dx: 0, dy: 0}
@@ -41,8 +50,8 @@ const playerSpeed = 1.2;
 let playerDX = 0;
 let playerDY = 0;
 
-let friendX = gameWindowWidth - 150;
-let friendY = gameWindowHeight - 200;
+let friendX = gameWindowWidth - 140;
+let friendY = gameWindowHeight - 160;
 
 // Desks
 const deskCols = 5;
@@ -105,6 +114,12 @@ function update() {
         } 
     }
 
+    // Collision with player
+    if (AABB_Collision(playerNextX, playerNextY, playerWidth, playerHeight, 
+                        friendX, friendY, playerWidth, playerHeight)) {
+        collision = true;
+    }
+
     // if no collision, move the player
     if (!collision) {
         playerX = playerNextX;
@@ -138,6 +153,11 @@ function render() {
             desks[i][j].drawDesk(ctx);
         }
     }
+
+    // Draw Cheat Bar
+    ctx.strokeStyle = "black"
+    ctx.strokeRect(cheatBarX, cheatBarY, cheatBarWidth, cheatBarHeight);
+
     ctx.stroke();
 }
 

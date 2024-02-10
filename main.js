@@ -111,7 +111,7 @@ document.addEventListener('mouseup', function(event) {
     cheatBarFillingBool = false;
 });
 
-let playerCollidedLastFrame = false;
+//let playerCollidedLastFrame = false;
 // Update Stuff
 function update() {
     // Update Logic
@@ -139,11 +139,19 @@ function update() {
     if (!collision) {
         playerX = playerNextX;
         playerY = playerNextY;
-    } else {
-        playerCollidedLastFrame = true;
-    }
+    } 
 
-    if (playerCollidedLastFrame) {
+    if (AABB_Collision(playerX + 1, playerY, playerWidth, playerHeight,
+                        friendX, friendY, playerWidth, playerHeight)
+        ||
+        AABB_Collision(playerX - 1, playerY, playerWidth, playerHeight,
+            friendX, friendY, playerWidth, playerHeight)
+        ||
+        AABB_Collision(playerX, playerY + 1, playerWidth, playerHeight,
+            friendX, friendY, playerWidth, playerHeight)
+        ||
+        AABB_Collision(playerX, playerY - 1, playerWidth, playerHeight,
+            friendX, friendY, playerWidth, playerHeight)) {
         if (cheatBarFillingBool) {
             if (cheatBarFillHeight < 540) {
                 cheatBarFillHeight += growthRateCheatBar;

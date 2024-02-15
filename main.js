@@ -50,7 +50,7 @@ let playerX = 450;
 let playerY = 450;
 const playerWidth = 30;
 const playerHeight = 30;
-const playerSpeed = 1.2;
+const playerSpeed = 2;
 let playerDX = 0;
 let playerDY = 0;
 
@@ -88,16 +88,16 @@ document.addEventListener('keyup', function(event) {
 
 document.addEventListener('keydown', function(event) {
     if (event.code === "KeyW") {
-        playerDY = -1;
+        playerDY = -(playerSpeed);
     } 
     if (event.code === "KeyA") {
-        playerDX = -1;
+        playerDX = -(playerSpeed);
     }
     if (event.code === "KeyS") {
-        playerDY = 1;
+        playerDY = playerSpeed;
     }
     if (event.code === "KeyD") {
-        playerDX = 1;
+        playerDX = playerSpeed;
     }
 });
 

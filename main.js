@@ -141,6 +141,9 @@ function update() {
         playerY = playerNextY;
     } 
 
+    // Clean this up boi
+    // Consider a function called checkCollision that takes 1 array with all 8 params
+    // or just modify AABB to take an array or object or whatever.
     if (AABB_Collision(playerX + 1, playerY, playerWidth, playerHeight,
                         friendX, friendY, playerWidth, playerHeight)
         ||
